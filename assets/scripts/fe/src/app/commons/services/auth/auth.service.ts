@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { API_AUTH_LOGIN, API_AUTH } from '../../constants/api.constants';
+import { API_AUTH_LOGIN, API_AUTH, API_USERS } from '../../constants/api.constants';
 import { AUTH_KEY } from '../../constants/conf.constants';
-import { User } from '../../models/user.models';
+import { User, Users } from '../../models/user.models';
+import { BehaviorSubject } from 'rxjs';
 
 
 @Injectable({
@@ -11,10 +12,15 @@ import { User } from '../../models/user.models';
 })
 export class AuthService {
   public user: User = new User();
+  private users$: BehaviorSubject<Users> = new BehaviorSubject(new Users());
 
   constructor(
     private http: HttpClient
   ) {}
+
+  get users() {
+    return this.users$.asObservable();
+  }
 
   async login(data: any) {
     try {
@@ -25,6 +31,14 @@ export class AuthService {
     } catch (errors) {
       return Promise.reject(errors);
     }
+  }
+
+  fetchUsers() {
+    return this.http.get(API_USERS)
+    .toPromise()
+    .then((resp: Users) => {
+      this.users$.next(resp);
+    });
   }
 
   /* MANAGE USER TOKEN

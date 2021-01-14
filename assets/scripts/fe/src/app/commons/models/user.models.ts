@@ -25,3 +25,15 @@ export class User {
     return `${this.email}`;
   }
 }
+
+
+export class Users {
+  count: number = null;
+  next: string = null;
+  previous: string = null;
+  results: User[] = Array<User>(); 
+
+  constructor(data = {}) {
+    Object.assign(this, data);
+  }
+}

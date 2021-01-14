@@ -1,0 +1,8 @@
+<div>
+  <div *ngFor="let user of users.results" (click)="activeChat(user)" class="media border-bottom px-5 py-3">
+    <img class="mr-3 avatar" src="static/scripts/fe/src/assets/images/def-prof.png" alt="Generic placeholder image">
+    <div class="media-body d-md-none d-xl-block">
+      <span class="my-0">{{formatName(user)}}</span>
+    </div>
+  </div>
+</div>

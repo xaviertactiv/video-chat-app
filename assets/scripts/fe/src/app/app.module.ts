@@ -10,6 +10,7 @@ import { PublicModule } from './components/public/public.module';
 
 import { APP_STATES } from './app.states';
 import { AppComponent } from './app.component';
+import { MessagingModule } from './components/messaging/messaging.module';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { AppComponent } from './app.component';
     BrowserModule,
     HttpClientModule,
     UIRouterModule.forRoot(APP_STATES),
-    PublicModule
+    PublicModule,
+    MessagingModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: TokenService, multi: true }
