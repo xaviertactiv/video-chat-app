@@ -66,8 +66,6 @@ class AuthTokenSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     """ user serializer
     """
-    client = serializers.SerializerMethodField()
-    contractor = serializers.SerializerMethodField()
 
     class Meta:
         model = get_user_model()
@@ -78,7 +76,4 @@ class UserSerializer(serializers.ModelSerializer):
             'last_name',
             'image',
             'date_joined',
-            'is_client',
-            'client',
-            'contractor'
         )

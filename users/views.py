@@ -9,7 +9,10 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet
+from rest_framework.generics import ListCreateAPIView
 
+from .models import User
+from .pagination import UsersPagination
 from .serializers import (
     AuthTokenSerializer,
     UserSerializer,
@@ -49,3 +52,9 @@ class AuthUser(ViewSet):
     def get(self, request):
         serializer = self.serializer_class(request.user)
         return Response(serializer.data, status=200)
+
+
+class UsersView(ListCreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    pagination_class = UsersPagination
