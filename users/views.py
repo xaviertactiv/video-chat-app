@@ -9,7 +9,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ViewSet
-from rest_framework.generics import ListCreateAPIView
+from rest_framework.generics import ListAPIView
 
 from .models import User
 from .pagination import UsersPagination
@@ -54,7 +54,18 @@ class AuthUser(ViewSet):
         return Response(serializer.data, status=200)
 
 
-class UsersView(ListCreateAPIView):
-    queryset = User.objects.all()
+class UsersView(ListAPIView):
     serializer_class = UserSerializer
     pagination_class = UsersPagination
+
+
+    def list(self, request):
+        queryset = self.serializer_class.Meta.model.objects.exclude(id=request.user.id)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)

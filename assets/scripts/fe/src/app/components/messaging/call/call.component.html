@@ -1,3 +1,14 @@
-<div>
-  <video #myStream width="640" height="480" autoplay></video>
+<div class="container">
+  <!-- <div class="text-center my-4">Status: <span class="font-weight-bold">{{callStatus}}</span></div> -->
+  <div class="row">
+    <div class="col-lg-6">
+      <div class="text-center font-weight-bold">Me</div>
+      <video style="width: 100%;" #myStream autoplay></video>
+    </div>
+    <div class="col-lg-6 mt-5 mt-lg-0">
+      <div class="text-center font-weight-bold">{{activeChat.displayName()}}</div>
+      <video style="width: 100%;" #calleeStream autoplay></video>
+    </div>
+
+  </div>
 </div>

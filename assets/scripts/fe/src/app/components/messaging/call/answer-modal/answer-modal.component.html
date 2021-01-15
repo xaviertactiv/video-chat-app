@@ -1,0 +1,10 @@
+<ng-template #content let-modal>
+  <div class="modal-body text-center">
+    <h5 class="mb-2">{{caller.displayName()}}</h5>
+    <span>Calling....</span>
+    <div class="mt-4">
+      <button class="btn mx-2 btn-danger" (click)="respondCall(false)">Decline</button>
+      <button class="btn mx-2 btn-success" (click)="respondCall(true)">Answer</button>
+    </div>
+  </div>
+</ng-template>
