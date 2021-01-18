@@ -17,6 +17,7 @@ export class AnswerModalComponent implements OnInit {
 
 
   private modal = null;
+  private remoteSdp: any = null;
 
   constructor(
     private modalService: NgbModal,
@@ -37,6 +38,7 @@ export class AnswerModalComponent implements OnInit {
       .subscribe((data: any) => {
         if (data.type === 'request-call') {
           this.caller = new User(data.user);
+          this.remoteSdp = data.sdp;
           this.open();
         }
       })
@@ -44,10 +46,8 @@ export class AnswerModalComponent implements OnInit {
   }
 
   respondCall(isAnswer) {
-    this.ws.respondCall(isAnswer);
-    
     if (isAnswer) {
-      this.state.go('call')
+      this.state.go('call', {isAnswer: true, data: this.remoteSdp})
     }
 
     this.modal.close()

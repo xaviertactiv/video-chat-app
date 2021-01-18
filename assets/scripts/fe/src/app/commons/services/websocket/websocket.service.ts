@@ -41,15 +41,37 @@ export class WebSocketService {
     return this.outboundCall$;
   }
 
+  get inboundConnection() {
+    return this.inboundCall$;
+  }
+
   private getNewWebSocket(id) {
     return webSocket(WS_API(id).callEndpoint);
   }
 
-  callUser() {
+  callUser(sdp) {
     this.outboundCall$.next({
       type: 'request-call',
-      user: this.auth.user
+      user: this.auth.user,
+      sdp
     });
+  }
+
+  sendIceCandidate(candidate, isCaller: boolean) {
+    const type = isCaller ? 'caller': 'callee';
+    const data = {
+      type: `${type}-candidate`,
+      user: this.auth.user,
+      candidate
+    }
+
+    if (isCaller) {
+      console.log('hey');
+      this.outboundCall$.next(data);
+    } else {
+      console.log('in')
+      this.inboundCall$.next(data);
+    }
   }
 
   disconnectOutbound() {
@@ -58,10 +80,11 @@ export class WebSocketService {
     this.outboundCall$ = null;
   }
 
-  respondCall(isAnswer) {
+  respondCall(isAnswer, sdp) {
     this.inboundCall$.next({
       type: isAnswer ? 'answer-call': 'decline-call',
-      user: this.auth.user
+      user: this.auth.user,
+      sdp
     });
   }
 }

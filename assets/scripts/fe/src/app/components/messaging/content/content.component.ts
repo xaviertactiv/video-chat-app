@@ -11,11 +11,9 @@ import { WebSocketService } from 'src/app/commons/services/websocket/websocket.s
 })
 export class ContentComponent implements OnInit {
   public activeChat: User = new User();
-  public connection = null;
 
   constructor(
     private state: StateService,
-    private ws: WebSocketService,
     private messagingService: MessagingService
   ) { }
 
@@ -31,18 +29,6 @@ export class ContentComponent implements OnInit {
 
   async makeCall() {
     // this.ws.connectCall(this.activeChat.id, false);
-    this.connection = await this.ws.connectCall(this.activeChat.id, false);
-
-    if (this.connection) {
-      this.connection
-      .pipe()
-      .subscribe((data: any) => {
-        console.log(data);
-      })
-
-      console.log('calling');
-      this.ws.callUser();
-      this.state.go('call');
-    }
+    this.state.go('call', {isAnswer: false});
   }
 }

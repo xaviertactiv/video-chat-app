@@ -16,5 +16,9 @@ export const MESSAGING_STATES: object[] = [
     name: 'call',
     url: '/call',
     views: ContentOnly(CallComponent),
+    params: {
+      isAnswer: false,
+      data: null
+    }
   },
 ];
