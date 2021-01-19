@@ -23,6 +23,7 @@ export class WebSocketService {
    * connect to call
    */
   async connectCall(id, isMe: boolean = true) {
+    console.log(id);
     if (isMe) {
         if (!this.inboundCall$ || this.inboundCall$.closed) {
           this.inboundCall$ = await this.getNewWebSocket(id);
@@ -41,6 +42,10 @@ export class WebSocketService {
     return this.outboundCall$;
   }
 
+  get inboundConnection() {
+    return this.inboundCall$;
+  }
+
   private getNewWebSocket(id) {
     return webSocket(WS_API(id).callEndpoint);
   }
@@ -50,6 +55,14 @@ export class WebSocketService {
       type: 'request-call',
       user: this.auth.user
     });
+  }
+
+  callerMessage(data) {
+    this.outboundCall$.next(data);
+  }
+
+  calleeMessage(data) {
+    this.inboundCall$.next(data);
   }
 
   disconnectOutbound() {

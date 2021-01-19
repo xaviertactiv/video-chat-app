@@ -47,7 +47,7 @@ export class AnswerModalComponent implements OnInit {
     this.ws.respondCall(isAnswer);
     
     if (isAnswer) {
-      this.state.go('call')
+      this.state.go('call', {isCaller: false})
     }
 
     this.modal.close()

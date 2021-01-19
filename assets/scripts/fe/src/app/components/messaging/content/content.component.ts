@@ -31,18 +31,19 @@ export class ContentComponent implements OnInit {
 
   async makeCall() {
     // this.ws.connectCall(this.activeChat.id, false);
-    this.connection = await this.ws.connectCall(this.activeChat.id, false);
+    this.state.go('call', {isCaller: true, calleeID:this.activeChat.id});
+    // this.connection = await this.ws.connectCall(this.activeChat.id, false);
 
-    if (this.connection) {
-      this.connection
-      .pipe()
-      .subscribe((data: any) => {
-        console.log(data);
-      })
+    // if (this.connection) {
+    //   this.connection
+    //   .pipe()
+    //   .subscribe((data: any) => {
+    //     console.log(data);
+    //   })
 
-      console.log('calling');
-      this.ws.callUser();
-      this.state.go('call');
-    }
+    //   console.log('calling');
+    //   this.ws.callUser();
+    //   this.state.go('call');
+    // }
   }
 }
