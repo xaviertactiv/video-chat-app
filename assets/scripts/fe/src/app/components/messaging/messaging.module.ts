@@ -8,6 +8,7 @@ import { ListComponent } from './list/list.component';
 import { ContentComponent } from './content/content.component';
 import { CallComponent } from './call/call.component';
 import { AnswerModalComponent } from './call/answer-modal/answer-modal.component';
+import { RoomComponent } from './room/room.component';
 
 
 @NgModule({
@@ -16,7 +17,8 @@ import { AnswerModalComponent } from './call/answer-modal/answer-modal.component
     ListComponent, 
     ContentComponent, 
     CallComponent,
-    AnswerModalComponent
+    AnswerModalComponent,
+    RoomComponent
   ],
   imports: [
     CommonModule,

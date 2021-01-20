@@ -1,7 +1,10 @@
+import { StateService } from '@uirouter/angular';
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/app/commons/services/auth/auth.service';
 import { Users, User } from 'src/app/commons/models/user.models';
 import { MessagingService } from 'src/app/commons/services/messaging.service';
+
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'app-list',
@@ -12,6 +15,7 @@ export class ListComponent implements OnInit {
   public users: Users = new Users();
 
   constructor(
+    private state: StateService,
     private authService: AuthService,
     private messagingService: MessagingService
   ) { }
@@ -34,5 +38,11 @@ export class ListComponent implements OnInit {
   formatName(user: User) {
     const userObj = new User(user);
     return userObj.displayName();
+  }
+
+  createRoom() {
+    const roomID = uuidv4();
+    
+    this.state.go('video-room', {id: roomID});
   }
 }

@@ -75,10 +75,11 @@ export class AuthService {
     this.user = new User(resp);
   }
 
-  getUser() {
+  async getUser() {
     if (this.user.id === null) {
-      this.setUser();
+      await this.setUser();
     }
+
     return this.user;
   }
 }

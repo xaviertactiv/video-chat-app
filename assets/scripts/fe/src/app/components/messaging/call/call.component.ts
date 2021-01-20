@@ -14,7 +14,7 @@ export class CallComponent implements AfterViewInit {
   @ViewChild('myStream', {static: false}) myStream: ElementRef;
   @ViewChild('calleeStream', {static: false}) calleeStream: ElementRef;
 
-  private localStream: any = null;  
+  private localStream: any = null;
   private peerConnection: any = null;
   private connection: any = null;
   private isCaller: boolean;
@@ -27,10 +27,10 @@ export class CallComponent implements AfterViewInit {
         ],
       },
     ]
-  }
+  };
 
   public activeChat: User = new User();
-  public callStatus: string = 'Pending'
+  public callStatus = 'Pending';
 
 
   constructor(
@@ -42,7 +42,7 @@ export class CallComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     // check if the user is caller or callee
-    if(this.state.params.isCaller) {
+    if (this.state.params.isCaller) {
       const calleeID = this.state.params.calleeID;
       this.isCaller = true;
 
@@ -52,7 +52,7 @@ export class CallComponent implements AfterViewInit {
       this.isCaller = false;
 
       this.connectCallee();
-    } 
+    }
   }
 
 
@@ -71,7 +71,7 @@ export class CallComponent implements AfterViewInit {
       if (data.type === 'new-ice-candidate') {
         this.handleNewICECandidateMsg(data);
       }
-    })
+    });
   }
 
   /**
@@ -89,54 +89,55 @@ export class CallComponent implements AfterViewInit {
       .pipe()
       .subscribe((data: any) => {
         // if callee answered the call create an call offer
-        if (data.type === 'answer-call'){
+        if (data.type === 'answer-call') {
             this.handleCreateCall();
         }
-        if (data.type === 'decline-call'){
+        if (data.type === 'decline-call') {
           this.state.go('messaging');
         }
-        if (data.type === 'answer-sdp-call'){
+        if (data.type === 'answer-sdp-call') {
           this.peerConnection.setRemoteDescription(data.sdp);
         }
         if (data.type === 'new-ice-candidate') {
           this.handleNewICECandidateMsg(data);
         }
-      })
+      });
     }
   }
 
 
   createPeerConnection() {
     this.peerConnection = new RTCPeerConnection(this.peerConfiguration);
-    
+
     this.peerConnection.onicecandidate = e => this.handleICECandidateEvent(e);
     this.peerConnection.ontrack = e => this.handleTrackEvent(e);
     this.peerConnection.onnegotiationneeded = e => this.handleNegotiationNeededEvent();
   }
 
   /**
-   * Create peer connection and get the local media 
+   * Create peer connection and get the local media
    * when the callee answers the call.
-  */
+   */
   async handleCreateCall() {
     this.createPeerConnection();
 
     // get local media stream
     const stream = await navigator.mediaDevices.getUserMedia({video: true, audio: false});
-    
-    let _video = this.myStream.nativeElement;
+
+    // tslint:disable-next-line: variable-name
+    const _video = this.myStream.nativeElement;
     this.localStream = stream;
 
     _video.srcObject = stream;
     _video.play();
-    
+
     // add local stream to the RTCPeerConnection
-    this.localStream.getTracks().forEach(track => this.peerConnection.addTrack(track, this.localStream))
+    this.localStream.getTracks().forEach(track => this.peerConnection.addTrack(track, this.localStream));
   }
 
-  /** 
+  /**
    * handle the answer call
-  */
+   */
   async handleAnswerCall(offerSdp) {
     const offer = new RTCSessionDescription(offerSdp);
 
@@ -148,15 +149,16 @@ export class CallComponent implements AfterViewInit {
 
     // get local media stream
     const stream = await navigator.mediaDevices.getUserMedia({video: true, audio: false});
-    
-    let _video = this.myStream.nativeElement;
+
+    // tslint:disable-next-line: variable-name
+    const _video = this.myStream.nativeElement;
     this.localStream = stream;
 
     _video.srcObject = stream;
     _video.play();
-    
+
     // add local stream to the RTCPeerConnection
-    await this.localStream.getTracks().forEach(track => this.peerConnection.addTrack(track, this.localStream))
+    await this.localStream.getTracks().forEach(track => this.peerConnection.addTrack(track, this.localStream));
 
     // create answer sdp
     const answer = await this.peerConnection.createAnswer();
@@ -167,7 +169,7 @@ export class CallComponent implements AfterViewInit {
   }
 
   /**
-   * Create an offer sdp and send to the callee 
+   * Create an offer sdp and send to the callee
    * via signaling server
    */
   async handleNegotiationNeededEvent() {
@@ -179,11 +181,11 @@ export class CallComponent implements AfterViewInit {
   }
 
   /**
-   * Get peer media (video, audio) and display to the page 
+   * Get peer media (video, audio) and display to the page
    */
   handleTrackEvent(event) {
     if (event) {
-      let remoteStream = this.calleeStream.nativeElement;
+      const remoteStream = this.calleeStream.nativeElement;
 
       remoteStream.srcObject = event.streams[0];
 
@@ -193,7 +195,7 @@ export class CallComponent implements AfterViewInit {
   }
 
   /**
-   * Handle ice candidate. And send the candidate to the 
+   * Handle ice candidate. And send the candidate to the
    * peer via signaling server (websocket).
    */
   handleICECandidateEvent(event) {
@@ -207,9 +209,9 @@ export class CallComponent implements AfterViewInit {
       }
     }
   }
-  
+
   /**
-   * Receiver of the new ice sent from peer 
+   * Receiver of the new ice sent from peer
    * and add to the RTCPeerConnection
    */
   handleNewICECandidateMsg(msg) {

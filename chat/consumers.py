@@ -1,7 +1,7 @@
 import json
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
-class CallConsumer(AsyncJsonWebsocketConsumer):
+class ChatConsumer(AsyncJsonWebsocketConsumer):
 
 
     async def connect(self):
