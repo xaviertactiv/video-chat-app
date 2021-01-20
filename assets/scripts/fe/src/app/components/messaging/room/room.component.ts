@@ -24,7 +24,7 @@ export class RoomComponent implements OnInit {
   private mediaList: MediaStream[] = Array<MediaStream>();
   private mediaListUID = [];
   private peerConnections = [];
-  private mediaSetting = {video: true, audio: false};
+  private mediaSetting = {video: true, audio: true};
   private peerConfiguration = {
     iceServers: [
       {
