@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { BaseComponent } from './base/base.component';
 
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { UIRouterModule } from '@uirouter/angular';
 import { ListComponent } from './list/list.component';
@@ -13,9 +15,9 @@ import { RoomComponent } from './room/room.component';
 
 @NgModule({
   declarations: [
-    BaseComponent, 
-    ListComponent, 
-    ContentComponent, 
+    BaseComponent,
+    ListComponent,
+    ContentComponent,
     CallComponent,
     AnswerModalComponent,
     RoomComponent
@@ -23,7 +25,8 @@ import { RoomComponent } from './room/room.component';
   imports: [
     CommonModule,
     UIRouterModule,
-    NgbModule
+    NgbModule,
+    FontAwesomeModule
   ]
 })
 export class MessagingModule { }

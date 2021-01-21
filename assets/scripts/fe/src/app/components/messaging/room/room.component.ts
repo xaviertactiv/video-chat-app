@@ -1,10 +1,18 @@
-import { Component, OnInit, ViewChild, ElementRef, Renderer2, RendererFactory2} from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import { AuthService } from 'src/app/commons/services/auth/auth.service';
 import { StateService } from '@uirouter/angular';
 import { RoomWebSocketService } from 'src/app/commons/services/websocket/room.service';
 
 import { v4 as uuidv4 } from 'uuid';
 import { User } from 'src/app/commons/models/user.models';
+
+import {
+  faMicrophone,
+  faMicrophoneSlash,
+  faVideo,
+  faVideoSlash,
+  faPhoneSlash
+} from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-room',
@@ -15,9 +23,9 @@ export class RoomComponent implements OnInit {
   @ViewChild('streamsContainer', {static: false}) streamsContainer: ElementRef;
   @ViewChild('peerStream', {static: false}) peerStream: ElementRef;
 
-
   public roomID: string = null;
   public userUID: string = null;
+  public controls = {video: true, audio: true};
 
   private me: User = new User();
   private localStream: MediaStream = new MediaStream();
@@ -35,6 +43,13 @@ export class RoomComponent implements OnInit {
       },
     ]
   };
+
+  // icons
+  faMicrophone = faMicrophone;
+  faMicrophoneSlash = faMicrophoneSlash;
+  faVideo = faVideo;
+  faVideoSlash = faVideoSlash;
+  faPhoneSlash = faPhoneSlash;
 
   constructor(
     private state: StateService,
@@ -59,7 +74,6 @@ export class RoomComponent implements OnInit {
     this.requestOffer();
 
     // receiver of the data from the other user
-    console.log(channel);
     channel.pipe()
     .subscribe((msg: any) => {
       if (msg.type === 'request-offer') {
@@ -78,6 +92,12 @@ export class RoomComponent implements OnInit {
         if (msg.type === 'new-ice-candidate') {
           this.handleNewICECandidateMsg(msg);
         }
+      }
+      if (msg.type === 'controls-update') {
+        this.updatePeerStream(msg);
+      }
+      if (msg.type === 'hang-up') {
+        this.closeVideoCall(msg.user.uid);
       }
     });
   }
@@ -114,10 +134,11 @@ export class RoomComponent implements OnInit {
   async createNewStreamElement(stream, uid) {
     if (!this.mediaListUID.includes(uid)) {
       const elContainer = await this.renderer.createElement('div');
+      elContainer.id = `div-${uid}`;
       elContainer.classList.add('stream-video');
 
       const videoEl = await this.renderer.createElement('video');
-      videoEl.id = 'asd';
+      videoEl.id = uid;
       videoEl.srcObject = stream;
       videoEl.muted = this.isMe(uid);
       videoEl.play();
@@ -135,6 +156,7 @@ export class RoomComponent implements OnInit {
     peerConnection.onicecandidate = e => this.handleICECandidateEvent(e, peerUID);
     peerConnection.ontrack = e => this.handleTrackEvent(e, peerUID);
     peerConnection.onnegotiationneeded = e => this.handleNegotiationNeededEvent(peerUID);
+    peerConnection.oniceconnectionstatechange = e => this.handleICEConnectionStateChangeEvent(e, peerUID);
 
     // add peer connection to the list
     this.peerConnections.push({peerUID, peerConnection});
@@ -164,7 +186,7 @@ export class RoomComponent implements OnInit {
     if (event) {
       setTimeout(() => {
         this.createNewStreamElement(event.streams[0], peerUID);
-      }, 1000);
+      }, 5000);
     }
   }
 
@@ -247,5 +269,71 @@ export class RoomComponent implements OnInit {
     const candidate = new RTCIceCandidate(msg.ice);
 
     peerConnection.addIceCandidate(candidate);
+  }
+
+  handleICEConnectionStateChangeEvent(event, peerUID) {
+    const peerConnection = this.getPeerConnection(peerUID);
+
+    switch (peerConnection.iceConnectionState) {
+      case 'disconnected':
+        this.closeVideoCall(peerUID);
+        break;
+    }
+  }
+
+
+  /**
+   * Enable/disable a video or audio
+   * type: audio or video
+   */
+  controlToggle(type) {
+    this.controls[type] = !this.controls[type];
+
+    this.roomService.sendMessage({
+      type: 'controls-update',
+      user: {
+        uid: this.userUID
+      },
+      controls: this.controls
+    });
+  }
+
+  hangUp() {
+    this.roomService.sendMessage({
+      type: 'hang-up',
+      user: {
+        uid: this.userUID
+      },
+      controls: this.controls
+    });
+
+    // redirect page
+    this.state.go('messaging');
+  }
+
+  updatePeerStream(msg) {
+    const peerUID = msg.user.uid;
+    const controls = msg.controls;
+    const videoEl = document.getElementById(peerUID);
+
+    if (videoEl) {
+      videoEl.style.display = controls.video ? 'block' : 'none';
+      // tslint:disable-next-line: no-string-literal
+      videoEl['muted'] = controls.audio;
+    }
+  }
+
+  closeVideoCall(peerUID) {
+    const el = document.getElementById(`div-${peerUID}`);
+    const peerConnection = this.getPeerConnection(peerUID);
+
+    if (peerConnection) {
+      peerConnection.onicecandidate = null;
+      peerConnection.ontrack = null;
+      peerConnection.onnegotiationneeded = null;
+
+      // remove element
+      el.remove();
+    }
   }
 }

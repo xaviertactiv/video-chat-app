@@ -22,4 +22,28 @@
       height: 100%;
     }
   }
+  &-controls {
+    box-shadow: 0 1px 2px 0 rgba(60,64,67,0.302), 0 1px 3px 1px rgba(60,64,67,0.149);
+    -webkit-box-align: center;
+    width: 100vw;
+    height: 8vh;
+    box-align: center;
+    align-items: center;
+    background-color: #fff;
+    bottom: 0;
+    box-sizing: border-box;
+    display: flex;
+    margin-bottom: 0;
+    opacity: .96;
+    position: fixed;
+    text-align: center;
+    white-space: nowrap;
+    z-index: 3;
+  }
+}
+
+.btn-round {
+  border-radius: 50%;
+  width: 6vh;
+  height: 6vh;
 }
