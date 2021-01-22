@@ -26,6 +26,8 @@ export class RoomComponent implements OnInit {
   public roomID: string = null;
   public userUID: string = null;
   public controls = {video: true, audio: true};
+  public isJoined = false;
+  public roomURL = null;
 
   private me: User = new User();
   private localStream: MediaStream = new MediaStream();
@@ -61,9 +63,13 @@ export class RoomComponent implements OnInit {
   ngOnInit() {
     this.roomID = this.state.params.id;
     this.userUID = uuidv4();
+    this.roomURL = window.location.href;
     // this.me = await this.auth.getUser();
+  }
 
+  joinRoom() {
     this.connectToChannel();
+    this.isJoined = true;
   }
 
   /**
@@ -184,9 +190,7 @@ export class RoomComponent implements OnInit {
    */
   handleTrackEvent(event, peerUID) {
     if (event) {
-      setTimeout(() => {
-        this.createNewStreamElement(event.streams[0], peerUID);
-      }, 5000);
+      this.createNewStreamElement(event.streams[0], peerUID);
     }
   }
 
@@ -318,8 +322,11 @@ export class RoomComponent implements OnInit {
 
     if (videoEl) {
       videoEl.style.display = controls.video ? 'block' : 'none';
-      // tslint:disable-next-line: no-string-literal
-      videoEl['muted'] = controls.audio;
+
+      if (!this.isMe(peerUID)) {
+        // tslint:disable-next-line: no-string-literal
+        videoEl['muted'] = !controls.audio;
+      }
     }
   }
 

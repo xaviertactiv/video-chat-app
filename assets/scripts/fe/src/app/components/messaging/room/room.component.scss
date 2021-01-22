@@ -1,3 +1,10 @@
+.lobby-container {
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+}
+
 .stream {
   &-container {
     background-color: #00000c;

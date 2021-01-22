@@ -1,39 +1,49 @@
-<div #streamsContainer class="stream-container">
-  
-</div>
-<div class="stream-controls">
-  <div class="row w-100">
-    <div class="col"></div>
-    <div class="col">
-      <div class="row justify-content-around">
-        <button 
-          class="btn btn-round" 
-          [ngClass]="{
-            'btn-primary': controls.audio,
-            'btn-danger': !controls.audio
-          }"
-          (click)="controlToggle('audio')">
-          <fa-icon *ngIf="controls.audio; else audioMute" [icon]="faMicrophone"></fa-icon>
-          <ng-template #audioMute>
-            <fa-icon [icon]="faMicrophoneSlash"></fa-icon>
-          </ng-template>
-        </button>
-        <button class="btn btn-round btn-danger" (click)="hangUp()">
-          <fa-icon [icon]="faPhoneSlash"></fa-icon>
-        </button>
-        <button class="btn btn-round"
-          [ngClass]="{
-            'btn-primary': controls.video,
-            'btn-danger': !controls.video
-          }"
-          (click)="controlToggle('video')">
-          <fa-icon *ngIf="controls.video; else videoSlash" [icon]="faVideo"></fa-icon>
-          <ng-template #videoSlash>
-            <fa-icon [icon]="faVideoSlash"></fa-icon>
-          </ng-template>
-        </button>
-      </div>
+<div class="lobby-container" *ngIf="!isJoined; else actualRoom">
+  <div class="text-center">
+    <h4>ROOM READY!</h4>
+    <small>{{this.roomURL}}</small>
+    <div class="my-3">
+      <button class="btn btn-primary" (click)="joinRoom()">Join room</button>
     </div>
-    <div class="col"></div>
   </div>
 </div>
+<ng-template #actualRoom>
+  <div #streamsContainer class="stream-container">
+  </div>
+  <div class="stream-controls">
+    <div class="row w-100">
+      <div class="col"></div>
+      <div class="col">
+        <div class="row justify-content-around">
+          <button 
+            class="btn btn-round" 
+            [ngClass]="{
+              'btn-primary': controls.audio,
+              'btn-danger': !controls.audio
+            }"
+            (click)="controlToggle('audio')">
+            <fa-icon *ngIf="controls.audio; else audioMute" [icon]="faMicrophone"></fa-icon>
+            <ng-template #audioMute>
+              <fa-icon [icon]="faMicrophoneSlash"></fa-icon>
+            </ng-template>
+          </button>
+          <button class="btn btn-round btn-danger" (click)="hangUp()">
+            <fa-icon [icon]="faPhoneSlash"></fa-icon>
+          </button>
+          <button class="btn btn-round"
+            [ngClass]="{
+              'btn-primary': controls.video,
+              'btn-danger': !controls.video
+            }"
+            (click)="controlToggle('video')">
+            <fa-icon *ngIf="controls.video; else videoSlash" [icon]="faVideo"></fa-icon>
+            <ng-template #videoSlash>
+              <fa-icon [icon]="faVideoSlash"></fa-icon>
+            </ng-template>
+          </button>
+        </div>
+      </div>
+      <div class="col"></div>
+    </div>
+  </div>
+</ng-template>
